@@ -1100,8 +1100,8 @@ Blockly.BlockSvg.prototype.renderDraw_ = function(iconWidth, inputRows) {
   this.squareTopLeftCorner_ = false;
   if (!this.outputConnection && !this.previousConnection) {
     // No output or previous connection.
-    this.squareTopLeftCorner_ = true;
-    this.startHat_ = true;
+    this.squareTopLeftCorner_ = false; // WY
+    this.startHat_ = false; // WY
     inputRows.rightEdge = Math.max(inputRows.rightEdge, 100);
   }
 
