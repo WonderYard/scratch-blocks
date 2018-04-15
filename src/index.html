@@ -111,7 +111,7 @@
 
       function getToolboxElement() {
         var match = location.search.match(/toolbox=([^&]+)/);
-        return document.getElementById('toolbox-' + (match ? match[1] : 'categories'));
+        return document.getElementById('toolbox-' + (match ? match[1] : 'simple'));
       }
 
       function toXml() {
@@ -528,7 +528,7 @@
         </select>
         <select name="toolbox" onchange="document.forms.options.submit()">
           <option value="categories">Categories</option>
-          <option value="simple" selected>Simple</option>
+          <option value="simple">Simple</option>
         </select>
         <select name="side" onchange="document.forms.options.submit()">
           <option value="start">Start</option>
