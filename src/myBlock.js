@@ -8,7 +8,8 @@ Blockly.Blocks['wy_state_defn'] = {
       "args0": [
         {
           "type": "input_value",
-          "name": "NAME"
+          "name": "NAME",
+          "check": "String"
         }
       ],
       "args1": [
@@ -28,6 +29,22 @@ Blockly.Blocks['wy_state_defn'] = {
     });
   }
 }
+
+Blockly.JavaScript['wy_state_defn'] = function(block) {
+  var code = (Blockly.JavaScript.valueToCode(block, 'NAME', Blockly.JavaScript.ORDER_MEMBER) || "") + "\n";
+  code += Blockly.JavaScript.valueToCode(block, "COLOR", Blockly.JavaScript.ORDER_MEMBER) || "#000000";
+  return code;
+};
+
+Blockly.JavaScript['text'] = function(block) {
+  var code = block.getFieldValue("TEXT");
+  return [code, null];
+};
+
+Blockly.JavaScript['colour_picker'] = function(block) {
+  var code = block.getFieldValue("COLOUR")
+  return [code, null];
+};
 
 Blockly.Blocks['wy_rule_menu'] = {
   /**
@@ -55,6 +72,16 @@ Blockly.Blocks['wy_rule_menu'] = {
         "extensions": ["colours_looks", "output_string"]
       });
   }
+};
+
+Blockly.JavaScript['wy_rule'] = function(block) {
+  var code = Blockly.JavaScript.valueToCode(block, 'EVOLVE_TO', Blockly.JavaScript.ORDER_MEMBER) || '0'
+  return code;
+};
+
+Blockly.JavaScript['wy_rule_menu'] = function(block) {
+  var code = block.getFieldValue("EVOLVE_TO")
+  return [code, null];
 };
 
 Blockly.Blocks['wy_condition_menu'] = {
@@ -183,22 +210,6 @@ Blockly.Blocks['wy_condition_between_custom_nbhd'] = {
   }
 }
 
-Blockly.Blocks['wy_test'] = {
-  init: function() {
-    this.jsonInit({
-      "message0": "%1",
-      "args0": [
-        {
-          "type": "input_value",
-          "name": "TEST_FIELD",
-        }
-      ],
-      "category": "WonderYard",
-      "extensions": ["colours_motion", "output_string"]
-    });
-  }
-}
-
 Blockly.Blocks['wy_true_constant'] = {
   init: function() {
     this.jsonInit({
@@ -208,4 +219,8 @@ Blockly.Blocks['wy_true_constant'] = {
       "extensions": ["colours_operators", "output_boolean"]
     });
   }
+}
+
+Blockly.JavaScript['wy_true_constant'] = function(block) {
+  return ["true", null];
 }
