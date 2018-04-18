@@ -81,6 +81,11 @@
           },
         });
 
+        //default background
+        var xmlblock = document.getElementById("background");
+        console.log(xmlblock.innerHTML);
+        Blockly.Xml.domToBlock(xmlblock,workspace);
+
         if (sessionStorage) {
           // Restore previously displayed text.
           var text = sessionStorage.getItem('textarea');
@@ -184,5 +189,19 @@
     <input type="button" value="Undo" onclick="workspace.undo()" />
     <input type="button" value="Redo" onclick="workspace.undo(true)" />
 
+    <!-- Background XML -->
+    <block type="wy_state_defn" id="background" x="50" y="50">
+      <value name="NAME">
+        <shadow type="text" id="fZ0JO~y+Dzi,Ar$VuC51">
+          <field name="TEXT">Background</field>
+        </shadow>
+      </value>
+      <value name="COLOR">
+        <shadow type="colour_picker" id="=;^i/uHLQAvCaKP=Qz}/">
+          <field name="COLOUR">#ffffff</field>
+        </shadow>
+      </value>
+    </block>
+    
   </body>
 </html>
