@@ -58,6 +58,14 @@
         document.getElementById('import').disabled = !valid;
       }
 
+      function setAutoTaChange(state) {
+        var checkbox = document.getElementById('autoTaChange');
+        checkbox.checked = (state) ? 'checked' : '';
+        if (sessionStorage) {
+          sessionStorage.setItem('autoTaChange', state);
+        }
+      }
+
       function main() {
         workspace = Blockly.inject('blocklyDiv', {
           toolbox: document.getElementById('toolbox'),
@@ -80,6 +88,15 @@
             document.getElementById('importExport').value = text;
           }
           taChange();
+        }
+
+        if (sessionStorage) {
+          var checked = sessionStorage.getItem('autoTaChange');
+          console.log(checked)
+          if (checked === "true") {
+            workspace.addChangeListener(toCode.bind(null, "JavaScript"));
+            setAutoTaChange(true)
+          }
         }
       }
     </script>
@@ -159,9 +176,11 @@
     <input type="button" value="Export to XML" onclick="toXml()">
     <input type="button" value="Import from XML" onclick="fromXml()" id="import">
     <input type="button" value="To JavaScript" onclick="toCode('JavaScript')">
-    <br>
+    <br><br>
+      <input type="checkbox" onclick="setAutoTaChange(this.checked)" id="autoTaChange"> Toggle automatic code generation (after refresh)
+    <br><br>
     <textarea id="importExport" style="width: 26%; height: 48em;" onchange="taChange();" onkeyup="taChange()"></textarea>
-    <br>
+    <br><br>
     <input type="button" value="Undo" onclick="workspace.undo()" />
     <input type="button" value="Redo" onclick="workspace.undo(true)" />
 
