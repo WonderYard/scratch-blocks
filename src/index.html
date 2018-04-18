@@ -34,6 +34,7 @@
       function fromXml() {
         var input = document.getElementById('importExport');
         var xml = Blockly.Xml.textToDom(input.value);
+        console.log(input.value);
         Blockly.Xml.domToWorkspace(xml, workspace);
         taChange();
       }
@@ -80,6 +81,27 @@
             scaleSpeed: 1.1
           },
         });
+
+        var xmlbackground =
+        '<xml xmlns="http://www.w3.org/1999/xhtml">'+
+          '<variables></variables>'+
+          '<block type="wy_default_state_defn" id="brackground_state" x="20" y="28">'+
+            '<value name="NAME">'+
+              '<shadow type="text" id="9Tb7zb{4[84nV6gL}{[c">'+
+                '<field name="TEXT">Background</field>'+
+              '</shadow>'+
+            '</value>'+
+            '<value name="COLOR">'+
+              '<shadow type="colour_picker" id="~M@l(JGk?f8iOPmhXs,~">'+
+                '<field name="COLOUR">#ffffff</field>'+
+              '</shadow>'+
+            '</value>'+
+          '</block>'+
+        '</xml>';
+
+        Blockly.Xml.domToWorkspace(Blockly.Xml.textToDom(xmlbackground), workspace);
+        workspace.getBlockById("brackground_state",workspace).setDeletable(false);;
+
 
         if (sessionStorage) {
           // Restore previously displayed text.
@@ -183,6 +205,6 @@
     <br><br>
     <input type="button" value="Undo" onclick="workspace.undo()" />
     <input type="button" value="Redo" onclick="workspace.undo(true)" />
-
+ 
   </body>
 </html>

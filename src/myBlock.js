@@ -1,3 +1,35 @@
+Blockly.Blocks['wy_default_state_defn'] = {
+  init: function() {
+    this.jsonInit({
+      "id": "STATE_DEFN",
+      "message0": "default state %1",
+      "message1": "color %1",
+      "message2": "%1", // Statement
+      "args0": [
+        {
+          "type": "input_value",
+          "name": "NAME",
+          "check": "String"
+        }
+      ],
+      "args1": [
+        {
+          "type": "input_value",
+          "name": "COLOR"
+        }
+      ],
+      "args2": [
+        {
+          "type": "input_statement",
+          "name": "RULE_LIST"
+        }
+      ],
+      "category": "WonderYard",
+      "extensions": ["colours_motion", "shape_hat"]
+    });
+  }
+}
+
 Blockly.Blocks['wy_state_defn'] = {
   init: function() {
     this.jsonInit({
@@ -31,6 +63,12 @@ Blockly.Blocks['wy_state_defn'] = {
 }
 
 Blockly.JavaScript['wy_state_defn'] = function(block) {
+  var code = (Blockly.JavaScript.valueToCode(block, 'NAME', Blockly.JavaScript.ORDER_MEMBER) || "") + "\n";
+  code += Blockly.JavaScript.valueToCode(block, "COLOR", Blockly.JavaScript.ORDER_MEMBER) || "#000000";
+  return code;
+};
+
+Blockly.JavaScript['wy_default_state_defn'] = function(block) {
   var code = (Blockly.JavaScript.valueToCode(block, 'NAME', Blockly.JavaScript.ORDER_MEMBER) || "") + "\n";
   code += Blockly.JavaScript.valueToCode(block, "COLOR", Blockly.JavaScript.ORDER_MEMBER) || "#000000";
   return code;
