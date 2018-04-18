@@ -19,6 +19,9 @@
     <script src="myBlock.js"></script>
 
     <script>
+
+      var workspace = null;
+
       function toXml() {
         var output = document.getElementById('importExport');
         var xml = Blockly.Xml.workspaceToDom(workspace);
@@ -69,6 +72,15 @@
             scaleSpeed: 1.1
           },
         });
+
+        if (sessionStorage) {
+          // Restore previously displayed text.
+          var text = sessionStorage.getItem('textarea');
+          if (text) {
+            document.getElementById('importExport').value = text;
+          }
+          taChange();
+        }
       }
     </script>
 
