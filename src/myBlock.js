@@ -1,3 +1,59 @@
+var workspace = null;
+
+function getBlocksName() {
+  var name=[['myself', 'ME']];
+  if(workspace == null) return name;
+  var a = workspace.getAllBlocks();
+  for(var i = 0; i < a.length; i++) {
+    if(a[i].type === "wy_state_defn" || a[i].type === "wy_state_defn_default") {
+      var asd = Blockly.JavaScript.valueToCode(a[i], 'NAME', Blockly.JavaScript.ORDER_MEMBER) || "";
+      name.push([asd, name.length]);
+    }
+  }
+  return name;
+}
+
+function updateWorkspace() {
+  if(workspace == null) return;
+  var a = workspace.getAllBlocks();
+
+  var stateSymbols = [["myself", "ME"]];
+  for(var i = 0; i < a.length; i++) {
+    if(a[i].type === "wy_state_defn" || a[i].type === "wy_state_defn_default") {
+      var name = Blockly.JavaScript.valueToCode(a[i], 'NAME', Blockly.JavaScript.ORDER_MEMBER) || "";
+      stateSymbols.push([name, stateSymbols.length]);
+    }
+  }
+
+  console.log("stateSymbols", stateSymbols);
+
+  for(var i = 0; i < a.length; i++) {
+    if(a[i].type === "wy_rule_menu") {
+      var field = a[i].getField("EVOLVE_TO");
+      var found = false;
+      var foundText = null;
+      var value = field.getValue();
+      console.log("start search for", value)
+      for(var j = 0; j < stateSymbols.length; j++) {
+        if(value === stateSymbols[j][1]) {
+          found = true;
+          foundText = stateSymbols[j][0];
+          console.log(found)
+          break;
+        }
+      }
+      if(!found) {
+        console.log("not found, setting to ME")
+        field.setValue("ME");
+        field.setText("myself")
+      }
+      else {
+        field.setText(foundText)
+      }
+    }
+  }
+}
+
 Blockly.Blocks['wy_state_defn'] = {
   init: function() {
     this.jsonInit({
@@ -30,14 +86,62 @@ Blockly.Blocks['wy_state_defn'] = {
   }
 }
 
+Blockly.Blocks['wy_state_defn_default'] = {
+  init: function() {
+    this.jsonInit({
+      "id": "STATE_DEFN",
+      "message0": "background state %1",
+      "message1": "color %1",
+      "message2": "%1", // Statement
+      "args0": [
+        {
+          "type": "input_value",
+          "name": "NAME",
+          "check": "String"
+        }
+      ],
+      "args1": [
+        {
+          "type": "input_value",
+          "name": "COLOR"
+        }
+      ],
+      "args2": [
+        {
+          "type": "input_statement",
+          "name": "RULE_LIST"
+        }
+      ],
+      "category": "WonderYard",
+      "extensions": ["colours_motion", "shape_hat"]
+    });
+  }
+}
+
+var stateCount = null;
+
+Blockly.JavaScript['wy_state_defn_default'] = function(block) {
+  stateCount = 0;
+  var name = Blockly.JavaScript.valueToCode(block, 'NAME', Blockly.JavaScript.ORDER_MEMBER) || "";
+  return "// state " + name + "\n" +
+  "case " + stateCount++ + ":\n" +
+  (Blockly.JavaScript.statementToCode(block, 'RULE_LIST', Blockly.JavaScript.ORDER_MEMBER) || "  break;")
+};
+
 Blockly.JavaScript['wy_state_defn'] = function(block) {
-  var code = (Blockly.JavaScript.valueToCode(block, 'NAME', Blockly.JavaScript.ORDER_MEMBER) || "") + "\n";
-  code += Blockly.JavaScript.valueToCode(block, "COLOR", Blockly.JavaScript.ORDER_MEMBER) || "#000000";
-  return code;
+  var name = Blockly.JavaScript.valueToCode(block, 'NAME', Blockly.JavaScript.ORDER_MEMBER) || "";
+  return "// state " + name + "\n" +
+  "case " + stateCount++ + ":\n" +
+  (Blockly.JavaScript.statementToCode(block, 'RULE_LIST', Blockly.JavaScript.ORDER_MEMBER) || "  break;")
 };
 
 Blockly.JavaScript['text'] = function(block) {
   var code = block.getFieldValue("TEXT");
+  return [code, null];
+};
+
+Blockly.JavaScript['math_number'] = function(block) {
+  var code = block.getFieldValue("NUM") + "";
   return [code, null];
 };
 
@@ -59,11 +163,7 @@ Blockly.Blocks['wy_rule_menu'] = {
           {
             "type": "field_dropdown",
             "name": "EVOLVE_TO",
-            "options": [
-              ['myself', 'ME'],
-              ['Alive', '0'],
-              ['Dead', '1']
-            ]
+            "options": getBlocksName
           }
         ],
         "colour": Blockly.Colours.motion.secondary,
@@ -75,8 +175,9 @@ Blockly.Blocks['wy_rule_menu'] = {
 };
 
 Blockly.JavaScript['wy_rule'] = function(block) {
-  var code = Blockly.JavaScript.valueToCode(block, 'EVOLVE_TO', Blockly.JavaScript.ORDER_MEMBER) || '0'
-  return code;
+  var evolve_to = Blockly.JavaScript.valueToCode(block, 'EVOLVE_TO', Blockly.JavaScript.ORDER_MEMBER) || stateCount - 1
+  if(evolve_to === "ME") evolve_to = stateCount - 1;
+  return "if(" + (Blockly.JavaScript.valueToCode(block, 'CONDITIONS', Blockly.JavaScript.ORDER_MEMBER) || "false") + ") return " + evolve_to + ";\n";
 };
 
 Blockly.JavaScript['wy_rule_menu'] = function(block) {
@@ -96,12 +197,8 @@ Blockly.Blocks['wy_condition_menu'] = {
         "args0": [
           {
             "type": "field_dropdown",
-            "name": "EVOLVE_TO",
-            "options": [
-              ['myself', 'ME'],
-              ['Alive', '0'],
-              ['Dead', '1']
-            ]
+            "name": "REF",
+            "options": getBlocksName
           }
         ],
         "colour": Blockly.Colours.motion.secondary,
@@ -110,6 +207,12 @@ Blockly.Blocks['wy_condition_menu'] = {
         "extensions": ["colours_operators", "output_string"]
       });
   }
+};
+
+Blockly.JavaScript['wy_condition_menu'] = function(block) {
+  var ref = block.getFieldValue("REF")
+  if(ref === "ME") return null
+  return [ref, null];
 };
 
 Blockly.Blocks['wy_rule'] = {
@@ -167,6 +270,13 @@ Blockly.Blocks['wy_condition_between'] = {
     });
   }
 }
+
+Blockly.JavaScript['wy_condition_between'] = function(block) {
+  var ref = Blockly.JavaScript.valueToCode(block, 'REF', Blockly.JavaScript.ORDER_MEMBER) || stateCount - 1;
+  var min = Blockly.JavaScript.valueToCode(block, 'MIN', Blockly.JavaScript.ORDER_MEMBER) || "0";
+  var max = Blockly.JavaScript.valueToCode(block, 'MAX', Blockly.JavaScript.ORDER_MEMBER) || "+Infinity";
+  return [`nbhd[${ref}] >= ${min} && nbhd[${ref}] <= ${max}`, null];
+};
 
 Blockly.Blocks['wy_condition_between_custom_nbhd'] = {
   init: function() {

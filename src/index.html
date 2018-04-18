@@ -20,8 +20,6 @@
 
     <script>
 
-      var workspace = null;
-
       function toXml() {
         var output = document.getElementById('importExport');
         var xml = Blockly.Xml.workspaceToDom(workspace);
@@ -83,8 +81,7 @@
 
         //default background
         var xmlblock = document.getElementById("background");
-        console.log(xmlblock.innerHTML);
-        Blockly.Xml.domToBlock(xmlblock,workspace);
+        Blockly.Xml.domToBlock(xmlblock, workspace).setDeletable(false);
 
         if (sessionStorage) {
           // Restore previously displayed text.
@@ -97,12 +94,13 @@
 
         if (sessionStorage) {
           var checked = sessionStorage.getItem('autoTaChange');
-          console.log(checked)
           if (checked === "true") {
             workspace.addChangeListener(toCode.bind(null, "JavaScript"));
             setAutoTaChange(true)
           }
         }
+
+        workspace.addChangeListener(updateWorkspace);
       }
     </script>
 
@@ -175,6 +173,22 @@
       <block type="wy_true_constant"></block>
     </xml>
 
+    <!-- Barebone workspace -->
+    <xml style="display: none">
+      <block type="wy_state_defn_default" id="background" x="50" y="50">
+        <value name="NAME">
+          <shadow type="text">
+            <field name="TEXT">Background</field>
+          </shadow>
+        </value>
+        <value name="COLOR">
+          <shadow type="colour_picker">
+            <field name="COLOUR">#ffffff</field>
+          </shadow>
+        </value>
+      </block>
+    </xml>
+
     <!-- Sidebar -->
     <h1>WonderYard</h1>
 
@@ -184,24 +198,10 @@
     <br><br>
       <input type="checkbox" onclick="setAutoTaChange(this.checked)" id="autoTaChange"> Toggle automatic code generation (after refresh)
     <br><br>
-    <textarea id="importExport" style="width: 26%; height: 48em;" onchange="taChange();" onkeyup="taChange()"></textarea>
+    <textarea id="importExport" style="width: 26%; height: 30em; font-size: 16px; font-family: monospace;" onchange="taChange();" onkeyup="taChange()"></textarea>
     <br><br>
     <input type="button" value="Undo" onclick="workspace.undo()" />
     <input type="button" value="Redo" onclick="workspace.undo(true)" />
-
-    <!-- Background XML -->
-    <block type="wy_state_defn" id="background" x="50" y="50">
-      <value name="NAME">
-        <shadow type="text" id="fZ0JO~y+Dzi,Ar$VuC51">
-          <field name="TEXT">Background</field>
-        </shadow>
-      </value>
-      <value name="COLOR">
-        <shadow type="colour_picker" id="=;^i/uHLQAvCaKP=Qz}/">
-          <field name="COLOUR">#ffffff</field>
-        </shadow>
-      </value>
-    </block>
     
   </body>
 </html>
