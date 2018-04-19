@@ -134,7 +134,8 @@ Blockly.JavaScript['wy_state_defn_default'] = function(block) {
   var name = Blockly.JavaScript.valueToCode(block, 'NAME', Blockly.JavaScript.ORDER_MEMBER) || "";
   return "// state " + name + "\n" +
   "case " + stateCount++ + ":\n" +
-  (Blockly.JavaScript.statementToCode(block, 'RULE_LIST', Blockly.JavaScript.ORDER_MEMBER) || "  break;")
+  (Blockly.JavaScript.statementToCode(block, 'RULE_LIST', Blockly.JavaScript.ORDER_MEMBER) || "") +
+  "  break;";
 };
 
 Blockly.JavaScript['wy_state_defn'] = function(block) {
@@ -142,7 +143,8 @@ Blockly.JavaScript['wy_state_defn'] = function(block) {
   var name = Blockly.JavaScript.valueToCode(block, 'NAME', Blockly.JavaScript.ORDER_MEMBER) || "";
   return "// state " + name + "\n" +
   "case " + stateCount++ + ":\n" +
-  (Blockly.JavaScript.statementToCode(block, 'RULE_LIST', Blockly.JavaScript.ORDER_MEMBER) || "  break;")
+  (Blockly.JavaScript.statementToCode(block, 'RULE_LIST', Blockly.JavaScript.ORDER_MEMBER) || "") +
+  "  break;";
 };
 
 Blockly.JavaScript['text'] = function(block) {
@@ -188,7 +190,7 @@ Blockly.JavaScript['wy_rule'] = function(block) {
   if(evolve_to === "ME") evolve_to = stateCount - 1;
   var condition = Blockly.JavaScript.valueToCode(block, 'CONDITIONS', Blockly.JavaScript.ORDER_MEMBER) || "false";
   if(condition === "false") return "";
-  return "if(" + condition + ") return " + evolve_to + ";\n";
+  return (condition !== "true" ? "if(" + condition + ") " : "") + "return " + evolve_to + ";\n";
 };
 
 Blockly.JavaScript['wy_rule_menu'] = function(block) {
