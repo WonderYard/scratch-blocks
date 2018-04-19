@@ -1,13 +1,16 @@
 var workspace = null;
 
 function getBlocksName() {
-  var name=[['myself', 'ME']];
+  var name = [["myself", "ME"]];
   if(workspace == null) return name;
   var a = workspace.getAllBlocks();
   for(var i = 0; i < a.length; i++) {
+    if (a[i].isInsertionMarker()) {
+      continue;
+    }
     if(a[i].type === "wy_state_defn" || a[i].type === "wy_state_defn_default") {
       var asd = Blockly.JavaScript.valueToCode(a[i], 'NAME', Blockly.JavaScript.ORDER_MEMBER) || "";
-      name.push([asd, name.length]);
+      name.push([asd, "" + (name.length - 1)]);
     }
   }
   return name;
@@ -19,31 +22,31 @@ function updateWorkspace() {
 
   var stateSymbols = [["myself", "ME"]];
   for(var i = 0; i < a.length; i++) {
+    if (a[i].isInsertionMarker()) {
+      continue;
+    }
     if(a[i].type === "wy_state_defn" || a[i].type === "wy_state_defn_default") {
       var name = Blockly.JavaScript.valueToCode(a[i], 'NAME', Blockly.JavaScript.ORDER_MEMBER) || "";
-      stateSymbols.push([name, stateSymbols.length]);
+      stateSymbols.push([name, "" + (stateSymbols.length - 1)]);
     }
   }
 
-  console.log("stateSymbols", stateSymbols);
-
   for(var i = 0; i < a.length; i++) {
-    if(a[i].type === "wy_rule_menu") {
-      var field = a[i].getField("EVOLVE_TO");
+    if(a[i].type === "wy_rule_menu" || a[i].type === "wy_condition_menu") {
+      var field = null;
+      if(a[i].type === "wy_rule_menu") field = a[i].getField("EVOLVE_TO");
+      if(a[i].type === "wy_condition_menu") field = a[i].getField("REF");
       var found = false;
       var foundText = null;
       var value = field.getValue();
-      console.log("start search for", value)
       for(var j = 0; j < stateSymbols.length; j++) {
         if(value === stateSymbols[j][1]) {
           found = true;
           foundText = stateSymbols[j][0];
-          console.log(found)
           break;
         }
       }
       if(!found) {
-        console.log("not found, setting to ME")
         field.setValue("ME");
         field.setText("myself")
       }
@@ -129,6 +132,7 @@ Blockly.JavaScript['wy_state_defn_default'] = function(block) {
 };
 
 Blockly.JavaScript['wy_state_defn'] = function(block) {
+  if(block.isInsertionMarker()) return "";
   var name = Blockly.JavaScript.valueToCode(block, 'NAME', Blockly.JavaScript.ORDER_MEMBER) || "";
   return "// state " + name + "\n" +
   "case " + stateCount++ + ":\n" +
@@ -175,6 +179,8 @@ Blockly.Blocks['wy_rule_menu'] = {
 };
 
 Blockly.JavaScript['wy_rule'] = function(block) {
+  if(block.isInsertionMarker()) return "";
+  if(!block.getParent()) return "";
   var evolve_to = Blockly.JavaScript.valueToCode(block, 'EVOLVE_TO', Blockly.JavaScript.ORDER_MEMBER) || stateCount - 1
   if(evolve_to === "ME") evolve_to = stateCount - 1;
   return "if(" + (Blockly.JavaScript.valueToCode(block, 'CONDITIONS', Blockly.JavaScript.ORDER_MEMBER) || "false") + ") return " + evolve_to + ";\n";
@@ -210,6 +216,7 @@ Blockly.Blocks['wy_condition_menu'] = {
 };
 
 Blockly.JavaScript['wy_condition_menu'] = function(block) {
+  if(block.isInsertionMarker()) return "";
   var ref = block.getFieldValue("REF")
   if(ref === "ME") return null
   return [ref, null];
@@ -272,9 +279,13 @@ Blockly.Blocks['wy_condition_between'] = {
 }
 
 Blockly.JavaScript['wy_condition_between'] = function(block) {
+  if(block.isInsertionMarker()) return "";
+  if(!block.getParent()) return "";
   var ref = Blockly.JavaScript.valueToCode(block, 'REF', Blockly.JavaScript.ORDER_MEMBER) || stateCount - 1;
-  var min = Blockly.JavaScript.valueToCode(block, 'MIN', Blockly.JavaScript.ORDER_MEMBER) || "0";
-  var max = Blockly.JavaScript.valueToCode(block, 'MAX', Blockly.JavaScript.ORDER_MEMBER) || "+Infinity";
+  var min = Blockly.JavaScript.valueToCode(block, 'MIN', Blockly.JavaScript.ORDER_MEMBER) || 0;
+  var max = Blockly.JavaScript.valueToCode(block, 'MAX', Blockly.JavaScript.ORDER_MEMBER) || 64;
+  if(min > max) return [`false`, null];
+  if(min == max) return [`nbhd[${ref}] == ${min}`, null];
   return [`nbhd[${ref}] >= ${min} && nbhd[${ref}] <= ${max}`, null];
 };
 
@@ -332,5 +343,7 @@ Blockly.Blocks['wy_true_constant'] = {
 }
 
 Blockly.JavaScript['wy_true_constant'] = function(block) {
+  if(block.isInsertionMarker()) return "";
+  if(!block.getParent()) return "";
   return ["true", null];
 }
