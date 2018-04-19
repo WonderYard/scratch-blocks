@@ -74,17 +74,20 @@ Blockly.Blocks['wy_state_defn'] = {
       "args1": [
         {
           "type": "input_value",
-          "name": "COLOR"
+          "name": "COLOR",
+          "check": "Colour"
         }
       ],
       "args2": [
         {
           "type": "input_statement",
-          "name": "RULE_LIST"
+          "name": "RULE_LIST",
+          "check": "Rule"
         }
       ],
+      // TODO: "nextStatement": "Membership",
       "category": "WonderYard",
-      "extensions": ["colours_motion", "shape_hat"]
+      "extensions": ["colours_motion"]
     });
   }
 }
@@ -106,17 +109,20 @@ Blockly.Blocks['wy_state_defn_default'] = {
       "args1": [
         {
           "type": "input_value",
-          "name": "COLOR"
+          "name": "COLOR",
+          "check": "Colour"
         }
       ],
       "args2": [
         {
           "type": "input_statement",
-          "name": "RULE_LIST"
+          "name": "RULE_LIST",
+          "check": "Rule"
         }
       ],
+      // TODO: "nextStatement": "Membership",
       "category": "WonderYard",
-      "extensions": ["colours_motion", "shape_hat"]
+      "extensions": ["colours_motion"]
     });
   }
 }
@@ -170,9 +176,6 @@ Blockly.Blocks['wy_rule_menu'] = {
             "options": getBlocksName
           }
         ],
-        "colour": Blockly.Colours.motion.secondary,
-        "colourSecondary": Blockly.Colours.motion.secondary,
-        "colourTertiary": Blockly.Colours.motion.tertiary,
         "extensions": ["colours_looks", "output_string"]
       });
   }
@@ -183,7 +186,9 @@ Blockly.JavaScript['wy_rule'] = function(block) {
   if(!block.getParent()) return "";
   var evolve_to = Blockly.JavaScript.valueToCode(block, 'EVOLVE_TO', Blockly.JavaScript.ORDER_MEMBER) || stateCount - 1
   if(evolve_to === "ME") evolve_to = stateCount - 1;
-  return "if(" + (Blockly.JavaScript.valueToCode(block, 'CONDITIONS', Blockly.JavaScript.ORDER_MEMBER) || "false") + ") return " + evolve_to + ";\n";
+  var condition = Blockly.JavaScript.valueToCode(block, 'CONDITIONS', Blockly.JavaScript.ORDER_MEMBER) || "false";
+  if(condition === "false") return "";
+  return "if(" + condition + ") return " + evolve_to + ";\n";
 };
 
 Blockly.JavaScript['wy_rule_menu'] = function(block) {
@@ -207,9 +212,6 @@ Blockly.Blocks['wy_condition_menu'] = {
             "options": getBlocksName
           }
         ],
-        "colour": Blockly.Colours.motion.secondary,
-        "colourSecondary": Blockly.Colours.motion.secondary,
-        "colourTertiary": Blockly.Colours.motion.tertiary,
         "extensions": ["colours_operators", "output_string"]
       });
   }
@@ -225,13 +227,13 @@ Blockly.JavaScript['wy_condition_menu'] = function(block) {
 Blockly.Blocks['wy_rule'] = {
   init: function () {
     this.jsonInit({
-      "id": "RULE_LIST",
       "message0": "to %1",
       "message1": "when %1",
       "args0": [
         {
           "type": "input_value",
-          "name": "EVOLVE_TO"
+          "name": "EVOLVE_TO",
+          "check": "String"
         }
       ],
       "args1": [
@@ -241,8 +243,10 @@ Blockly.Blocks['wy_rule'] = {
           "check": "Boolean"
         }
       ],
+      "previousStatement": "Rule",
+      "nextStatement": "Rule",
       "category": "WonderYard",
-      "extensions": ["colours_looks", "shape_statement"]
+      "extensions": ["colours_looks"]
     });
   }
 }
@@ -257,19 +261,22 @@ Blockly.Blocks['wy_condition_between'] = {
       "args0": [
         {
           "type": "input_value",
-          "name": "REF"
+          "name": "REF",
+          "check": "String"
         }
       ],
       "args1": [
         {
           "type": "input_value",
-          "name": "MIN"
+          "name": "MIN",
+          "check": "Number"
         }
       ],
       "args2": [
         {
           "type": "input_value",
-          "name": "MAX"
+          "name": "MAX",
+          "check": "Number"
         }
       ],
       "category": "WonderYard",
@@ -300,19 +307,22 @@ Blockly.Blocks['wy_condition_between_custom_nbhd'] = {
       "args0": [
         {
           "type": "input_value",
-          "name": "REF"
+          "name": "REF",
+          "check": "String"
         }
       ],
       "args1": [
         {
           "type": "input_value",
-          "name": "MIN"
+          "name": "MIN",
+          "check": "Number"
         }
       ],
       "args2": [
         {
           "type": "input_value",
-          "name": "MAX"
+          "name": "MAX",
+          "check": "Number"
         }
       ],
       "args3": [
