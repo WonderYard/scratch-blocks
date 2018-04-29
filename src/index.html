@@ -205,9 +205,26 @@
           },
         });
 
+        var xmlbackground =
+        '<xml xmlns="http://www.w3.org/1999/xhtml">' +
+          '<variables></variables>' +
+          '<block type="wy_state_defn_default" id="background" x="50" y="50">' +
+            '<value name="NAME">' +
+              '<shadow type="text">' +
+                '<field name="TEXT">Background</field>'+
+              '</shadow>'+
+            '</value>'+
+            '<value name="COLOR">'+
+              '<shadow type="colour_picker">' +
+                '<field name="COLOUR">#000000</field>' +
+              '</shadow>' +
+            '</value>' +
+          '</block>' +
+       '</xml>'
+
         //default background
-        var xmlblock = document.getElementById("background");
-        Blockly.Xml.domToBlock(xmlblock, workspace).setDeletable(false);
+        Blockly.Xml.domToWorkspace(Blockly.Xml.textToDom(xmlbackground), workspace);
+        workspace.getBlockById("background", workspace).setDeletable(false);
 
         if (sessionStorage) {
           // Restore previously displayed text.
@@ -299,21 +316,6 @@
       <block type="wy_true_constant"></block>
     </xml>
 
-    <!-- Barebone workspace -->
-    <xml style="display: none">
-      <block type="wy_state_defn_default" id="background" x="50" y="50">
-        <value name="NAME">
-          <shadow type="text">
-            <field name="TEXT">Background</field>
-          </shadow>
-        </value>
-        <value name="COLOR">
-          <shadow type="colour_picker">
-            <field name="COLOUR">#000000</field>
-          </shadow>
-        </value>
-      </block>
-    </xml>
 
     <!-- Sidebar -->
     <h1>WonderYard</h1>
