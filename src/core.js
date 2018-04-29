@@ -75,6 +75,9 @@ World.prototype.getNeighbors = function(x, y) {
 		}
 	}
 
+	for(var i = 0; i < this.states.length; i++){
+		if(neighbors[i] == null) neighbors[i] = 0;
+	}
 	// for(var j = y - 1; j <= y + 1; j++) {
 	// 	for(var i = x - 1; i <= x + 1; i++) {
 	// 		count++;
