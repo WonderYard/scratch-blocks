@@ -298,6 +298,109 @@ Blockly.JavaScript['wy_condition_between'] = function(block) {
   return [`nbhd[${ref}] >= ${min} && nbhd[${ref}] <= ${max}`, null];
 };
 
+Blockly.Blocks['wy_condition_greater_than'] = {
+  init: function() {
+    this.jsonInit({
+      "id": "CONDITION_GREATER_THAN",
+      "message0": "%1",
+      "message1": "greater than %1",
+      "args0": [
+        {
+          "type": "input_value",
+          "name": "REF",
+          "check": "String"
+        }
+      ],
+      "args1": [
+        {
+          "type": "input_value",
+          "name": "MIN",
+          "check": "Number"
+        }
+      ],
+      "category": "WonderYard",
+      "extensions": ["colours_operators", "output_boolean"]
+    });
+  }
+}
+
+Blockly.JavaScript['wy_condition_greater_than'] = function(block) {
+  if(block.isInsertionMarker()) return "";
+  if(!block.getParent()) return "";
+  var ref = Blockly.JavaScript.valueToCode(block, 'REF', Blockly.JavaScript.ORDER_MEMBER) || stateCount - 1;
+  var min = Blockly.JavaScript.valueToCode(block, 'MIN', Blockly.JavaScript.ORDER_MEMBER) || 0;
+  return [`nbhd[${ref}] > ${min}`, null];
+};
+
+Blockly.Blocks['wy_condition_equals_to'] = {
+  init: function() {
+    this.jsonInit({
+      "id": "CONDITION_EQUALS_TO",
+      "message0": "%1",
+      "message1": "equals to %1",
+      "args0": [
+        {
+          "type": "input_value",
+          "name": "REF",
+          "check": "String"
+        }
+      ],
+      "args1": [
+        {
+          "type": "input_value",
+          "name": "NUM",
+          "check": "Number"
+        }
+      ],
+      "category": "WonderYard",
+      "extensions": ["colours_operators", "output_boolean"]
+    });
+  }
+}
+
+Blockly.JavaScript['wy_condition_equals_to'] = function(block) {
+  if(block.isInsertionMarker()) return "";
+  if(!block.getParent()) return "";
+  var ref = Blockly.JavaScript.valueToCode(block, 'REF', Blockly.JavaScript.ORDER_MEMBER) || stateCount - 1;
+  var min = Blockly.JavaScript.valueToCode(block, 'NUM', Blockly.JavaScript.ORDER_MEMBER) || 0;
+  return [`nbhd[${ref}] == ${min}`, null];
+};
+
+Blockly.Blocks['wy_condition_less_than'] = {
+  init: function() {
+    this.jsonInit({
+      "id": "CONDITION_LESS_THAN",
+      "message0": "%1",
+      "message1": "less than %1",
+      "args0": [
+        {
+          "type": "input_value",
+          "name": "REF",
+          "check": "String"
+        }
+      ],
+      "args1": [
+        {
+          "type": "input_value",
+          "name": "MAX",
+          "check": "Number"
+        }
+      ],
+      "category": "WonderYard",
+      "extensions": ["colours_operators", "output_boolean"]
+    });
+  }
+}
+
+Blockly.JavaScript['wy_condition_less_than'] = function(block) {
+  if(block.isInsertionMarker()) return "";
+  if(!block.getParent()) return "";
+  var ref = Blockly.JavaScript.valueToCode(block, 'REF', Blockly.JavaScript.ORDER_MEMBER) || stateCount - 1;
+  var min = Blockly.JavaScript.valueToCode(block, 'MAX', Blockly.JavaScript.ORDER_MEMBER) || 0;
+  return [`nbhd[${ref}] < ${min}`, null];
+};
+
+
 Blockly.Blocks['wy_condition_between_custom_nbhd'] = {
   init: function() {
     this.jsonInit({

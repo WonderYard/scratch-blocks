@@ -98,13 +98,13 @@ World.prototype.evolve = function() {
 	for (var y = 0; y < this.rows; y++) {
 		newGrid.push([]);
 		for (var x = 0; x < this.cols; x++) {
-			
 			var cell = this.getCell(x, y);
 			var neighbors = this.getNeighbors(x, y);
 			newGrid[y].push(this.ruleTable(cell, neighbors));
 		}
 	}
 	this.grid = newGrid;
+	
 	draw();
 };
 
